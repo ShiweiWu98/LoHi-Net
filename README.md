@@ -88,7 +88,7 @@ Please follow the steps below to set up the environment.
 ### 1. Clone the repository
 
 ```bash
-git clone TODO
+git clone https://github.com/ShiweiWu98/LoHi-Net.git
 cd LoHi-Net
 ```
 
