@@ -235,9 +235,9 @@ Example:
 
 ```bash
 python predict.py \
-  --config /home/wushiwei/projects/LoHi-Net/configs/train_on_VASST/config.yaml \
-  --checkpoint /home/wushiwei/projects/LoHi-Net/ckpts/train_on_VASST.ckpt \
-  --predict_save_dir /home/wushiwei/projects/LoHi-Net/demo/desmoked \
+  --config configs/train_on_VASST/config.yaml \
+  --checkpoint ckpts/train_on_VASST.ckpt \
+  --predict_save_dir demo/desmoked \
   --batch_size 1 \
   --devices 2
 ```
