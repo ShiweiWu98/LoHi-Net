@@ -189,15 +189,13 @@ data:
 
 ## Pretrained Models
 
-Pretrained checkpoints are expected under `ckpts/`.
+We provide pretrained checkpoints under `ckpts/`.
 
 ```text
 ckpts/
   train_on_VASST.ckpt
   train_on_LSVD.ckpt
 ```
-
-Download links will be released later.
 
 ## Training
 
