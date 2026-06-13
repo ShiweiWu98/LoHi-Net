@@ -1,0 +1,93 @@
+experiment:
+  name: LoHi_Net
+  version: train_on_LSVD
+base_output_dir: ./outputs
+checkpoint_base_dir: ${base_output_dir}/ckpts/${experiment.name}/${experiment.version}
+seed_everything: 42
+
+trainer:
+  max_epochs: 350
+  devices: [0]
+  check_val_every_n_epoch: 5
+  accumulate_grad_batches: 2
+
+  logger:  
+    - class_path: pytorch_lightning.loggers.CSVLogger
+      init_args:
+        save_dir: ${checkpoint_base_dir}/logs
+        name: ${experiment.version}
+    # - class_path: swanlab.integration.pytorch_lightning.SwanLabLogger
+    #   init_args:
+    #     project: ${experiment.name}
+    #     experiment_name: ${experiment.version}
+    - class_path: lightning.pytorch.loggers.TensorBoardLogger
+      init_args:
+        save_dir: ${checkpoint_base_dir}/logs
+        name: ${experiment.name}
+        version: ${experiment.version}
+
+  callbacks:
+    # - class_path: pytorch_lightning.callbacks.ModelCheckpoint
+    #   init_args:
+    #     dirpath: ${checkpoint_base_dir} 
+    #     filename: 'epoch={epoch:02d}-psnr={valid/psnr:.3f}'
+    #     monitor: 'valid/psnr'
+    #     mode: max
+    #     save_top_k: 1
+    #     save_last: true
+    #     verbose: true
+    #     auto_insert_metric_name: false
+    # EMA Callback
+    - class_path: callbacks.ema_callback.EMAModelCheckpoint
+      init_args:
+        dirpath: ${checkpoint_base_dir}
+        filename: 'epoch={epoch:02d}-psnr={valid/psnr:.3f}'
+        monitor: 'valid/psnr'
+        mode: max
+        save_top_k: 1
+        save_last: true
+        verbose: true
+        auto_insert_metric_name: false
+    - class_path: callbacks.ema_callback.EMA
+      init_args:
+        decay: 0.99
+        apply_ema_every_n_steps: 1
+        start_step: 0
+        save_ema_weights_in_callback_state: true
+        evaluate_ema_weights_instead: true
+
+model:
+  target: LSVD_models.our_model.Desmoke_System
+  params:
+    net_desmoke:
+      target: models.archs.LoHi_Net.Backbone
+      params:
+        in_chans: 3
+        out_chans: 3
+        patch_size: 1
+        embed_dim: [48, 96, 192, 96, 48]
+        depth: [2, 2, 2, 2, 2]
+   
+    predict_save_dir: ${base_output_dir}/predictions
+    
+    loss_name: ['fft_loss', 'l1_loss']
+    loss_weights: [0.1, 1.0]
+
+    optimizer_cfg:
+      lr: 1.0e-4
+    scheduler_cfg:
+      lr_scheduler: cosine
+      lr_min: 1.0e-6
+    pwcnet_ckpt: ./LSVD_models/pwcnet/pretrained_ckpt/pwcnet-network-default.pth
+data:
+  target: data.LSVD_dataset.LSVD_DataModule
+  params:
+    train_root: /path/to/LSVD_train
+    val_root: /path/to/LSVD_test
+    test_root: /path/to/LSVD_test
+    image_size: [256, 256]
+    training_transforms: paired_transform
+    batch_size: 3
+    num_workers: 4
+    pin_memory: true
+    prefetch_factor: 2
