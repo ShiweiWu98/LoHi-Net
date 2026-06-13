@@ -13,13 +13,6 @@
 </p>
 
 <p align="center">
-  <a href="TODO">Paper</a> |
-  <a href="TODO">Code</a> |
-  <a href="TODO">Pretrained Models</a> |
-  <a href="TODO">Dataset</a>
-</p>
-
-<p align="center">
   <img src="https://img.shields.io/badge/Python-3.10-blue" />
   <img src="https://img.shields.io/badge/PyTorch-2.0.1-red" />
   <img src="https://img.shields.io/badge/MICCAI-2026-green" />
