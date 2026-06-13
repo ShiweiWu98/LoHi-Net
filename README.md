@@ -231,17 +231,6 @@ python main.py --config configs/train_on_LSVD/config.yaml --resume /path/to/chec
 
 Testing and inference are both handled by `predict.py`. The script first runs Lightning `test()` and then saves restored images with `predict()`.
 
-Example:
-
-```bash
-python predict.py \
-  --config configs/train_on_VASST/config.yaml \
-  --checkpoint ckpts/train_on_VASST.ckpt \
-  --predict_save_dir demo/desmoked \
-  --batch_size 1 \
-  --devices 2
-```
-
 For LSVD:
 
 ```bash
